@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Lab — Interactive Simulator</title>
+<style>
+:root{--bg:#0b1020;--panel:#131b30;--panel2:#18233d;--line:#2a3857;--text:#edf3ff;--muted:#a8b6d3;--cyan:#63e6e2;--blue:#8db5ff;--green:#8ce0ad;--amber:#ffd27d;--pink:#ff9eb5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1000px 500px at 10% -10%,#1b3154 0%,transparent 65%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{padding:28px max(20px,calc((100vw - 1180px)/2)) 22px;border-bottom:1px solid var(--line);background:#0b1020cc}
+.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+h1{margin:6px 0;font-size:clamp(28px,4vw,42px);letter-spacing:-.04em}header p{max-width:780px;color:var(--muted);margin:8px 0 0}
+main{max-width:1180px;margin:auto;padding:22px 20px 60px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+button,select,input,textarea{font:inherit}button{border:1px solid #3b527b;background:#223354;color:var(--text);border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:700;transition:.15s}button:hover{transform:translateY(-1px);border-color:var(--cyan)}button.primary{background:var(--cyan);color:#07131d;border-color:var(--cyan)}button.ghost{background:transparent}button:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.pill{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:5px 10px;color:var(--muted);font-size:12px}
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px}.sidebar,.stage,.card{background:linear-gradient(145deg,#151f36,#10182a);border:1px solid var(--line);border-radius:16px}
+.sidebar{padding:16px;height:max-content;position:sticky;top:12px}.side-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin:2px 0 12px}
+.stepnav{display:grid;gap:7px}.step{display:flex;gap:10px;align-items:center;text-align:left;width:100%;padding:10px;background:transparent;border-color:transparent;color:var(--muted)}.step .num{width:28px;height:28px;border-radius:9px;background:#263550;display:grid;place-items:center;flex-shrink:0;color:#d9e6ff}.step.active{background:#1d3150;border-color:#3b6485;color:var(--text)}.step.active .num{background:var(--cyan);color:#07131d}.step.done .num{background:#24573f;color:var(--green)}
+.progress{height:6px;background:#26324b;border-radius:99px;overflow:hidden;margin:16px 0 8px}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue));transition:width .25s}
+.stage{padding:clamp(16px,3vw,28px);min-height:600px}.stage-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}.stage h2{font-size:25px;letter-spacing:-.03em;margin:0 0 6px}.lead{color:var(--muted);max-width:780px;margin:0 0 22px}.kicker{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.card{padding:15px;background:#111b2f}.card h3{margin:0 0 8px;font-size:15px}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}.big{font-size:26px;font-weight:850;letter-spacing:-.04em}.label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}
+input[type=text],textarea,select{width:100%;background:#0b1324;color:var(--text);border:1px solid #344461;border-radius:9px;padding:11px;outline:none}textarea{min-height:90px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:var(--cyan)}
+.field{display:grid;gap:6px;margin:12px 0}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid #3a4a68;background:#1b2942;border-radius:8px;padding:5px 8px;font-size:12px;color:#d5e1fa}
+.doc{border:1px solid #30415f;background:#0d1729;border-radius:12px;padding:13px;margin:9px 0}.doc-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.doc strong{font-size:14px}.doc p{margin:8px 0;color:#c3d0e8;font-size:13px}.tag{font-size:10px;border-radius:5px;padding:3px 6px;background:#263653;color:#c6d8f7}.tag.good{background:#1b4939;color:var(--green)}.tag.warn{background:#594525;color:var(--amber)}
+.chunk{border:1px solid #344461;border-radius:10px;padding:12px;margin:8px 0;background:#0b1425}.chunk.selected{border-color:var(--cyan);box-shadow:0 0 0 1px #63e6e233}.chunk p{margin:7px 0;font-size:13px;color:#d1dcf1}.bar{height:7px;border-radius:99px;background:#27344d;overflow:hidden}.bar span{height:100%;display:block;border-radius:99px;background:linear-gradient(90deg,#63e6e2,#8db5ff)}
+.vector{display:flex;gap:5px;margin-top:10px}.vcell{height:25px;flex:1;border-radius:5px;background:#263957;position:relative;overflow:hidden}.vcell span{position:absolute;bottom:0;left:0;right:0;background:var(--blue);opacity:.85}
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:20px 0}.flowstep{border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;font-size:11px;color:var(--muted);position:relative}.flowstep b{display:block;color:var(--text);font-size:12px;margin-bottom:4px}.flowstep.current{border-color:var(--cyan);background:#173146}.flowstep.current b{color:var(--cyan)}
+.callout{border-left:3px solid var(--amber);padding:10px 13px;background:#2a2419;border-radius:0 8px 8px 0;color:#f5dfb7;margin:14px 0;font-size:13px}
+.codebox{font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;word-break:break-word;background:#080f1d;border:1px solid #293853;border-radius:10px;padding:14px;color:#c6f3ed;max-height:270px;overflow:auto}
+.answer{border:1px solid #356d62;background:#102a2b;border-radius:12px;padding:16px}.answer h3{color:var(--green)}
+.footer-nav{display:flex;justify-content:space-between;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+details{border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-top:10px}summary{cursor:pointer;font-weight:700;color:#dce7fb}
+.notice{font-size:12px;color:var(--muted);margin-top:14px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{position:static}.stepnav{grid-template-columns:repeat(2,minmax(0,1fr))}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:1fr}.stage{min-height:0}}
+@media(max-width:560px){main{padding:14px 12px 35px}.grid2{grid-template-columns:1fr}.stepnav{grid-template-columns:1fr 1fr}.step{font-size:12px;padding:8px}.flow{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Interactive learning environment</div>
+  <h1>RAG Lab <span style="color:var(--cyan)">/</span> Retrieval-Augmented Generation</h1>
+  <p>Follow a question through a miniature RAG pipeline: source documents → chunks → embeddings → retrieval → prompt context → generated answer. Change the query and settings to see what changes.</p>
+</header>
+<main>
+  <div class="toolbar">
+    <button class="primary" id="runAll">▶ Run full simulation</button>
+    <button class="ghost" id="reset">↺ Reset demo</button>
+    <span class="pill">Local demo · no API or internet needed</span>
+  </div>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-title">Pipeline steps</div>
+      <div class="stepnav" id="stepnav"></div>
+      <div class="progress"><span id="progressbar"></span></div>
+      <div class="tiny" id="progresslabel">Step 1 of 6</div>
+      <div class="callout" style="margin-top:18px"><b>Core idea</b><br>RAG retrieves useful evidence first, then gives that evidence to an LLM as context. The LLM still generates the answer.</div>
+      <div class="side-title" style="margin-top:18px">Your current question</div>
+      <div id="sideQuery" class="tiny">Which plan gives new customers a free trial?</div>
+    </aside>
+    <section class="stage">
+      <div id="stageContent"></div>
+      <div class="footer-nav">
+        <button id="prev">← Previous</button>
+        <span class="tiny" id="stepCounter" style="align-self:center">1 / 6</span>
+        <button class="primary" id="next">Next step →</button>
+      </div>
+    </section>
+  </div>
+</main>
+<script>
+const initialDocs = [
+ {id:"D1",title:"Starter Plan Guide",source:"Product handbook",text:"The Starter plan costs $12 per month. New customers can try the Starter plan free for 14 days. A credit card is required to activate the trial."},
+ {id:"D2",title:"Refund & Cancellation Policy",source:"Help centre",text:"Customers can cancel a paid subscription at any time from Account Settings. Refund requests are reviewed within five business days. Trial access ends when the trial period expires."},
+ {id:"D3",title:"Business Plan Overview",source:"Sales enablement",text:"The Business plan costs $49 per month and includes team workspaces, admin controls, and priority support. It is designed for teams of five or more people."},
+ {id:"D4",title:"Account Security FAQ",source:"Help centre",text:"Enable two-factor authentication from Security Settings. If you lose access to your account, use the recovery link on the sign-in page."},
+ {id:"D5",title:"Trial Eligibility",source:"Billing FAQ",text:"The 14-day free trial is available to new customers on the Starter plan. Existing paid customers are not eligible for another free trial. The trial converts to a paid subscription unless cancelled before it ends."}
+];
+let docs, query, chunkSize, overlap, topK, step, chunks, results, selectedDocIds;
+const steps=[["Source data","Your knowledge base"],["Chunking","Split into passages"],["Embeddings","Represent meaning as vectors"],["Retrieval","Find relevant chunks"],["Augmented prompt","Build evidence-rich context"],["Generation","LLM produces an answer"]];
+function resetState(){docs=JSON.parse(JSON.stringify(initialDocs));query="Which plan gives new customers a free trial, and how long is it?";chunkSize=24;overlap=5;topK=3;step=0;chunks=[];results=[];selectedDocIds=[];render()}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function tokenize(s){return (s.toLowerCase().match(/[a-z0-9$]+/g)||[]).filter(w=>!["the","a","an","is","it","to","of","and","for","on","in","can","be","are","from","with","at","by","how","what","which"].includes(w))}
+function makeChunks(){
+ chunks=[];
+ docs.forEach(d=>{
+   const words=d.text.match(/\S+/g)||[];
+   const size=chunkSize, stride=Math.max(1,size-overlap);
+   for(let start=0;start<words.length;start+=stride){
+     const part=words.slice(start,start+size).join(" ");
+     if(!part)continue;
+     chunks.push({id:d.id+"-C"+(chunks.filter(c=>c.docId===d.id).length+1),docId:d.id,title:d.title,text:part,start,end:Math.min(start+size,words.length)});
+     if(start+size>=words.length)break;
+   }
+ });
+}
+function vectorize(text){
+ // A transparent toy vector: term-frequency counts over a small vocabulary, not a production embedding model.
+ const vocab=["starter","business","plan","free","trial","14","days","new","customer","paid","cancel","refund","team","security","account","credit","card","monthly","eligible","subscription"];
+ const toks=tokenize(text); return vocab.map(w=>toks.filter(t=>t===w|| (w==="customer"&&t==="customers") || (w==="day"&&t==="days")).length);
+}
+function cosine(a,b){let dot=0,aa=0,bb=0;for(let i=0;i<a.length;i++){dot+=a[i]*b[i];aa+=a[i]*a[i];bb+=b[i]*b[i]}return aa&&bb?dot/(Math.sqrt(aa)*Math.sqrt(bb)):0}
+function retrieve(){
+ makeChunks(); const qv=vectorize(query);
+ results=chunks.map(c=>({...c,score:cosine(qv,vectorize(c.text))})).sort((a,b)=>b.score-a.score).slice(0,topK);
+ selectedDocIds=[...new Set(results.map(r=>r.docId))];
+}
+function nav(){document.getElementById("stepnav").innerHTML=steps.map((s,i)=>`<button class="step ${i===step?'active':''} ${i<step?'done':''}" data-step="${i}"><span class="num">${i<step?'✓':i+1}</span><span>${s[0]}<br><span class="tiny">${s[1]}</span></span></button>`).join("");document.querySelectorAll("[data-step]").forEach(b=>b.onclick=()=>{step=+b.dataset.step;render()});document.getElementById("progressbar").style.width=((step+1)/steps.length*100)+"%";document.getElementById("progresslabel").textContent=`Step ${step+1} of ${steps.length}`;document.getElementById("stepCounter").textContent=`${step+1} / ${steps.length}`;document.getElementById("prev").disabled=step===0;document.getElementById("next").textContent=step===5?"Back to start ↺":"Next step →";document.getElementById("sideQuery").textContent=query}
+function flow(){return `<div class="flow">${steps.map((s,i)=>`<div class="flowstep ${i===step?'current':''}"><b>${i+1}. ${s[0]}</b>${s[1]}</div>`).join("")}</div>`}
+function docsView(){return docs.map(d=>`<div class="doc"><div class="doc-top"><strong>${d.id} · ${d.title}</strong><span class="tag">${d.source}</span></div><p>${escapeHtml(d.text)}</p><div class="tiny">${(d.text.match(/\S+/g)||[]).length} words · source document</div></div>`).join("")}
+function chunksView(){if(!chunks.length)makeChunks();return chunks.map(c=>`<div class="chunk"><div class="doc-top"><strong>${c.id}</strong><span class="tag">${c.end-c.start} words</span></div><p>${escapeHtml(c.text)}</p><div class="tiny">From ${c.title} · word positions ${c.start+1}–${c.end}</div></div>`).join("")}
+function vectorCard(c,idx){const v=vectorize(c.text),vocab=["starter","business","plan","free","trial","14","days","new","customer","paid","cancel","refund","team","security","account","credit","card","monthly","eligible","subscription"];let max=Math.max(1,...v);return `<div class="card"><div class="doc-top"><h3>${c.id||"Query vector"}</h3><span class="tag">Toy vector · ${v.length} dimensions</span></div><p class="tiny">${escapeHtml((c.text||query).slice(0,100))}${(c.text||query).length>100?"…":""}</p><div class="vector">${v.slice(0,10).map(n=>`<div class="vcell" title="${n}"><span style="height:${Math.max(4,n/max*100)}%"></span></div>`).join("")}</div><div class="chips" style="margin-top:10px">${vocab.slice(0,10).map((w,i)=>`<span class="chip">${w}: ${v[i]}</span>`).join("")}</div></div>`}
+function getAnswer(){const relevant=results.filter(r=>r.score>0.05);let hasStarter=relevant.some(r=>/starter/i.test(r.text)&&/trial/i.test(r.text));let has14=relevant.some(r=>/14-day|14 days|14-day/i.test(r.text)||(/14/i.test(r.text)&&/trial|days/i.test(r.text)));if(hasStarter&&has14)return "The Starter plan offers new customers a free 14-day trial. A credit card is required to activate it, and the trial converts to a paid subscription unless cancelled before it ends.";if(hasStarter)return "The retrieved evidence indicates that the Starter plan has a free trial, but the selected passages do not clearly establish its duration. Retrieve more or different context to verify the length.";return "I couldn't find enough relevant evidence in the retrieved passages to answer confidently. A well-designed RAG system should say so rather than invent details."}
+function render(){
+ if(step>=2)makeChunks();if(step>=3)retrieve();
+ nav();let title=steps[step][0],lead=["First, the system needs a searchable knowledge base. These five fictional documents are the source of truth; a real system might index PDFs, web pages, support tickets, or internal policies.","Long documents are split into smaller passages. Retrieval usually works at chunk level because a focused passage is easier to match to a question than a whole document.","An embedding model converts text into a numeric vector that captures semantic features. This demo uses a tiny, transparent word-count vector so you can see the mechanics; real embeddings are dense learned representations.","The query is embedded too. The retriever compares the query vector with each chunk vector, ranks candidates by cosine similarity, and returns the top K. This toy score is lexical and simplified—not true semantic understanding.","Retrieved passages are placed into the prompt as grounding context. The LLM receives both the user's question and the selected evidence. The evidence can reduce unsupported answers, but it does not guarantee correctness.","The LLM reads the question plus retrieved context and writes a natural-language response. This final step is generation—not retrieval. The simulator uses simple rules to imitate the flow; no real LLM is called." ][step];
+ let body="";
+ if(step===0){body=`<div class="field"><label class="label" for="query">Question to answer</label><textarea id="queryInput">${escapeHtml(query)}</textarea><div class="tiny">Try a different question, e.g. “Can existing customers get another free trial?”</div></div><div class="grid3"><div class="card"><div class="label">Documents</div><div class="big">${docs.length}</div><div class="tiny">Source records</div></div><div class="card"><div class="label">Total words</div><div class="big">${docs.reduce((n,d)=>n+d.text.split(/\\s+/).length,0)}</div><div class="tiny">Across all sources</div></div><div class="card"><div class="label">Data source</div><div class="big" style="font-size:20px">Local</div><div class="tiny">No external connection</div></div></div><h3 style="margin-top:22px">Knowledge base</h3>${docsView()}<button id="saveQuery" class="primary">Use this question</button>`}
+ if(step===1){body=`<div class="grid2"><div class="card"><label class="label">Chunk size (words)</label><div class="big" id="sizeVal">${chunkSize}</div><input id="size" type="range" min="8" max="40" value="${chunkSize}" style="width:100%"><p class="tiny">Smaller chunks are focused; larger chunks preserve more context.</p></div><div class="card"><label class="label">Overlap (words)</label><div class="big" id="overlapVal">${overlap}</div><input id="overlap" type="range" min="0" max="12" value="${overlap}" style="width:100%"><p class="tiny">Overlap preserves information that might otherwise fall across a chunk boundary.</p></div></div><div class="callout">Chunk size is a design trade-off. Too small can lose context; too large can add noise. Production chunking may use tokens, headings, semantic boundaries, or document structure—not just word counts.</div><h3>Generated chunks <span class="pill">${chunks.length} chunks</span></h3>${chunksView()}`}
+ if(step===2){body=`<div class="callout">Important distinction: an embedding is not the original text and usually isn't a list of dictionary definitions. It's a numerical representation designed so semantically similar texts tend to be near each other in vector space.</div><div class="field"><label class="label">Text to embed</label><div class="codebox">${escapeHtml(query)}</div></div><div class="grid2">${vectorCard({id:"QUERY",text:query})}${vectorCard(chunks.find(c=>/free/i.test(c.text)&&/trial/i.test(c.text))||chunks[0])}</div><h3 style="margin-top:20px">How to read this toy vector</h3><p class="muted">Each bar represents one feature in our small vocabulary. Taller bars mean that word appears more often. This is deliberately simple so the process is visible. Real embedding models can produce hundreds or thousands of floating-point values and capture meaning beyond exact word overlap.</p><details><summary>What happens in a real embedding model?</summary><p class="muted">Text is tokenized, passed through a trained neural network, and pooled into a vector. The same embedding model should normally be used for both documents and queries. Vectors are stored in an index for fast nearest-neighbour search.</p></details>`}
+ if(step===3){body=`<div class="grid2"><div class="card"><label class="label">Top K results</label><select id="topK"><option value="1" ${topK===1?'selected':''}>1 chunk</option><option value="2" ${topK===2?'selected':''}>2 chunks</option><option value="3" ${topK===3?'selected':''}>3 chunks</option><option value="5" ${topK===5?'selected':''}>5 chunks</option></select><p class="tiny">How many passages should be passed downstream?</p></div><div class="card"><label class="label">Ranking method</label><div class="big" style="font-size:20px">Cosine similarity</div><p class="tiny">Measures the angle between vectors. Higher score means a closer match in this demo.</p></div></div><h3 style="margin-top:20px">Ranked retrieval results</h3>${results.map((r,i)=>`<div class="chunk ${i===0?'selected':''}"><div class="doc-top"><strong><span class="tag">${i+1}</span> ${r.id} · ${r.title}</strong><span class="tag ${r.score>.2?'good':'warn'}">${(r.score*100).toFixed(1)}% similarity</span></div><div class="bar" style="margin:10px 0"><span style="width:${Math.min(100,r.score*100)}%"></span></div><p>${escapeHtml(r.text)}</p><div class="tiny">Cosine score: ${r.score.toFixed(3)} · source ${r.docId}</div></div>`).join("")}<details><summary>Why might the best result still be wrong?</summary><p class="muted">Similarity is not the same as truth or entailment. A chunk can share words with the question while missing the answer. Production systems often combine vector search with keyword/BM25 search, metadata filters, reranking, and relevance thresholds.</p></details>`}
+ if(step===4){const context=results.map((r,i)=>`[${i+1}] ${r.title} (${r.id}): ${r.text}`).join("\\n");body=`<div class="grid2"><div class="card"><div class="label">Retrieved passages</div><div class="big">${results.length}</div><div class="tiny">Chunks selected for context</div></div><div class="card"><div class="label">Unique source docs</div><div class="big">${selectedDocIds.length}</div><div class="tiny">Documents represented in results</div></div></div><h3 style="margin-top:20px">The augmented prompt</h3><p class="muted">This is the combined input sent to the generator: instructions + user question + retrieved context.</p><div class="codebox">${escapeHtml(`SYSTEM: Answer using the supplied context. If the context does not contain the answer, say you do not have enough information. Do not invent facts.\\n\\nUSER QUESTION:\\n${query}\\n\\nRETRIEVED CONTEXT:\\n${context}\\n\\nINSTRUCTION: Give a concise answer and distinguish evidence from uncertainty.`)}</div><div class="callout">“Augmented” means the prompt has been enriched with retrieved information. The LLM's original training knowledge is not the same thing as this retrieved, up-to-date or private context.</div><details><summary>What should a robust production prompt add?</summary><p class="muted">Clear answer rules, source citations, handling for conflicting documents, date/version awareness, privacy controls, and an explicit instruction to abstain when evidence is insufficient.</p></details>`}
+ if(step===5){const ans=getAnswer();body=`<div class="answer"><div class="kicker">Simulated model response</div><h3>Answer</h3><p style="font-size:17px;color:#e3fff3">${escapeHtml(ans)}</p><div class="tiny">Grounded in retrieved context · generated by demo rules, not an actual LLM</div></div><h3 style="margin-top:22px">Trace the answer back to evidence</h3>${results.map(r=>`<div class="doc"><div class="doc-top"><strong>${r.id} · ${r.title}</strong><span class="tag ${ans.includes("couldn't find")?'warn':'good'}">${ans.includes("couldn't find")?'Weak evidence':'Retrieved'}</span></div><p>${escapeHtml(r.text)}</p></div>`).join("")}<div class="grid2" style="margin-top:14px"><div class="card"><div class="label">What RAG contributed</div><p>It supplied relevant passages that the generator could use as context.</p></div><div class="card"><div class="label">What RAG does not guarantee</div><p>Correct retrieval, complete evidence, or a perfectly faithful answer. Evaluate each stage separately.</p></div></div><details><summary>Try an experiment: remove useful evidence</summary><p class="muted">Return to Chunking and increase chunk size or adjust overlap, then change the question or Top K in Retrieval. Observe how retrieval results and the final answer change. This toy retriever is word-based, so it will not behave like a production semantic search engine.</p></details>`}
+ document.getElementById("stageContent").innerHTML=`<div class="stage-head"><div><div class="kicker">Step ${step+1} · ${steps[step][1]}</div><h2>${title}</h2></div><span class="pill">${["Ingest","Prepare","Encode","Search","Assemble","Generate"][step]}</span></div><p class="lead">${lead}</p>${flow()}${body}`;
+ document.getElementById("prev").onclick=()=>{if(step>0){step--;render()}};
+ document.getElementById("next").onclick=()=>{if(step<5){step++;render()}else{step=0;render()}};
+ const q=document.getElementById("saveQuery");if(q)q.onclick=()=>{query=document.getElementById("queryInput").value.trim()||query;results=[];step=0;render()};
+ const si=document.getElementById("size");if(si)si.oninput=()=>{chunkSize=+si.value;document.getElementById("sizeVal").textContent=chunkSize;makeChunks();document.querySelector("#stageContent h3").innerHTML=`Generated chunks <span class="pill">${chunks.length} chunks</span>`;document.querySelectorAll(".chunk").forEach(e=>e.remove());document.querySelector("#stageContent .callout").insertAdjacentHTML("afterend",`<h3>Generated chunks <span class="pill">${chunks.length} chunks</span></h3>${chunksView()}`)};
+ const oi=document.getElementById("overlap");if(oi)oi.oninput=()=>{overlap=Math.min(+oi.value,chunkSize-1);document.getElementById("overlapVal").textContent=overlap;makeChunks();const old=document.querySelectorAll("#stageContent .chunk");old.forEach(e=>e.remove());document.querySelectorAll("#stageContent h3").forEach(h=>{if(h.textContent.includes("Generated chunks"))h.remove()});document.querySelector("#stageContent .callout").insertAdjacentHTML("afterend",`<h3>Generated chunks <span class="pill">${chunks.length} chunks</span></h3>${chunksView()}`)};
+ const tk=document.getElementById("topK");if(tk)tk.onchange=()=>{topK=+tk.value;render()};
+}
+document.getElementById("runAll").onclick=()=>{step=5;render()};
+document.getElementById("reset").onclick=resetState;
+resetState();
+</script>
+</body>
+</html>
