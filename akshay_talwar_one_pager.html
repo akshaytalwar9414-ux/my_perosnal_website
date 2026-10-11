@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111111">
+<title>Akshay Talwar — Lead. Build. Evolve.</title>
+<style>
+  :root{--ink:#111;--paper:#f5f5f2;--volt:#d7ff00;--muted:#6d6d68;--line:#d7d7d1}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1180px,calc(100% - 48px));margin:auto}
+  .topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+  .mark{font-size:20px;font-weight:950;letter-spacing:-1.4px;text-transform:uppercase}
+  .mark span{color:#777}
+  .nav{display:flex;gap:28px;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
+  .nav a:hover{background:var(--volt)}
+  .hero{min-height:590px;display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:40px;padding:72px 0 76px;position:relative}
+  .eyebrow{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+  .dot{height:8px;width:8px;background:var(--volt);border:1px solid #111;border-radius:50%;display:inline-block}
+  h1{font-size:clamp(64px,10vw,132px);line-height:.83;letter-spacing:-.09em;margin:28px 0 26px;font-weight:950;text-transform:uppercase}
+  h1 .outline{color:transparent;-webkit-text-stroke:1.8px var(--ink)}
+  .hero-copy{max-width:520px;font-size:18px;line-height:1.55;color:#41413d}
+  .hero-copy strong{color:var(--ink)}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 19px;font-size:11px;letter-spacing:1.2px;font-weight:900;text-transform:uppercase;border:1px solid var(--ink);transition:.2s}
+  .btn.primary{background:var(--ink);color:white}
+  .btn.primary:hover{background:var(--volt);color:var(--ink)}
+  .btn.secondary:hover{background:var(--volt)}
+  .hero-art{min-height:390px;background:var(--volt);position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:28px}
+  .hero-art:before{content:"";position:absolute;width:410px;height:410px;border:54px solid rgba(17,17,17,.92);border-radius:50%;top:-105px;right:-130px}
+  .hero-art:after{content:"";position:absolute;width:250px;height:250px;border:2px solid rgba(17,17,17,.45);border-radius:50%;top:28px;right:32px}
+  .art-number{position:absolute;top:25px;left:27px;font-size:11px;font-weight:900;letter-spacing:2px}
+  .art-word{position:relative;z-index:1;font-size:clamp(45px,6vw,78px);line-height:.83;letter-spacing:-.08em;font-weight:950;text-transform:uppercase}
+  .art-word span{display:block;color:transparent;-webkit-text-stroke:1.5px var(--ink)}
+  .art-note{position:absolute;right:25px;bottom:27px;writing-mode:vertical-rl;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+  .ticker{background:var(--ink);color:white;overflow:hidden;white-space:nowrap;padding:16px 0;font-size:12px;letter-spacing:2px;font-weight:900;text-transform:uppercase}
+  .ticker span{color:var(--volt);padding:0 18px}
+  section{padding:86px 0}
+  .section-head{display:grid;grid-template-columns:.55fr 1.45fr;gap:30px;margin-bottom:42px;align-items:start}
+  .kicker{font-size:11px;letter-spacing:2px;font-weight:900;text-transform:uppercase;color:var(--muted);padding-top:10px}
+  h2{font-size:clamp(40px,6vw,76px);line-height:.9;letter-spacing:-.07em;text-transform:uppercase;margin:0;font-weight:950}
+  .intro{font-size:18px;line-height:1.6;max-width:750px;color:#454540;margin:22px 0 0}
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+  .pillar{padding:25px 24px 28px 0;min-height:185px}
+  .pillar+.pillar{border-left:1px solid var(--line);padding-left:24px}
+  .num{font-size:11px;font-weight:900;color:var(--muted);letter-spacing:1px}
+  .pillar h3{font-size:25px;line-height:1;letter-spacing:-1px;text-transform:uppercase;margin:24px 0 12px}
+  .pillar p{font-size:14px;line-height:1.6;color:#55554f;margin:0;max-width:300px}
+  .dark{background:var(--ink);color:white}
+  .dark .kicker{color:#aaa}
+  .dark .intro{color:#c6c6c0}
+  .dark .section-head{margin-bottom:48px}
+  .timeline{border-top:1px solid #484843}
+  .role{display:grid;grid-template-columns:.7fr 1.3fr;gap:30px;padding:26px 0;border-bottom:1px solid #484843}
+  .role-date{font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--volt);text-transform:uppercase}
+  .role h3{font-size:28px;letter-spacing:-1px;text-transform:uppercase;margin:0 0 8px}
+  .role .org{font-size:13px;color:#bdbdb7}
+  .role p{font-size:14px;line-height:1.65;color:#c6c6c0;max-width:700px;margin:14px 0 0}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#484843;border:1px solid #484843;margin-top:45px}
+  .stat{background:var(--ink);padding:25px}
+  .stat strong{display:block;color:var(--volt);font-size:clamp(35px,5vw,58px);letter-spacing:-.07em;line-height:1}
+  .stat span{display:block;font-size:11px;line-height:1.5;letter-spacing:1.3px;text-transform:uppercase;margin-top:13px;color:#c6c6c0;font-weight:800}
+  .build-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .build-card{min-height:230px;padding:28px;border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;transition:.2s}
+  .build-card:hover{background:var(--volt);border-color:var(--ink);transform:translateY(-3px)}
+  .build-card .tag{font-size:10px;letter-spacing:1.7px;font-weight:900;text-transform:uppercase}
+  .build-card h3{font-size:clamp(28px,3vw,42px);line-height:.95;letter-spacing:-.06em;text-transform:uppercase;margin:34px 0 12px}
+  .build-card p{font-size:14px;line-height:1.6;color:#55554f;max-width:450px;margin:0}
+  .education{display:grid;grid-template-columns:1fr 1fr;gap:40px;border-top:1px solid var(--line);padding-top:24px}
+  .education h3{font-size:22px;text-transform:uppercase;letter-spacing:-.7px;margin:0 0 8px}
+  .education p{font-size:14px;line-height:1.6;color:#55554f;margin:0}
+  .contact{background:var(--volt);padding:76px 0}
+  .contact h2{font-size:clamp(52px,9vw,110px);max-width:950px}
+  .contact-bottom{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-top:42px;padding-top:24px;border-top:1px solid rgba(17,17,17,.35)}
+  .contact-links{display:flex;flex-direction:column;gap:10px;font-size:15px;font-weight:800}
+  .contact-links a{width:fit-content;border-bottom:1px solid transparent}
+  .contact-links a:hover{border-color:var(--ink)}
+  .contact-label{font-size:10px;letter-spacing:1.5px;font-weight:900;text-transform:uppercase}
+  footer{background:var(--ink);color:#aaa;padding:20px 0;font-size:10px;letter-spacing:1.3px;text-transform:uppercase}
+  footer .wrap{display:flex;justify-content:space-between;gap:20px}
+  @media(max-width:760px){
+    .wrap{width:min(100% - 32px,600px)}
+    .topbar{height:64px}.nav{gap:12px;font-size:9px}.nav a:nth-child(2){display:none}
+    .hero{grid-template-columns:1fr;padding:56px 0;gap:32px;min-height:auto}
+    .hero-art{min-height:300px}
+    section{padding:62px 0}
+    .section-head{grid-template-columns:1fr;gap:12px}
+    .pillars{grid-template-columns:1fr}
+    .pillar,.pillar+.pillar{padding:23px 0;border-left:0;border-bottom:1px solid var(--line);min-height:0}
+    .pillar:last-child{border-bottom:0}
+    .role{grid-template-columns:1fr;gap:12px}
+    .stats{grid-template-columns:1fr}
+    .stat{padding:22px}
+    .build-grid{grid-template-columns:1fr}
+    .education{grid-template-columns:1fr;gap:24px}
+    .contact-bottom{align-items:start;flex-direction:column}
+    footer .wrap{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<header class="wrap topbar">
+  <a class="mark" href="#top">AKSHAY<span>.</span></a>
+  <nav class="nav" aria-label="Main navigation">
+    <a href="#approach">Approach</a><a href="#experience">Experience</a><a href="#building">What I'm building</a><a href="#contact">Contact ↗</a>
+  </nav>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <div class="eyebrow"><i class="dot"></i> Delhi, India · Leadership / Operations / AI</div>
+      <h1>Lead.<br><span class="outline">Build.</span><br>Evolve.</h1>
+      <p class="hero-copy">I’m <strong>Akshay Talwar</strong> — a customer engagement and operations leader who turns strategy into results, teams into high performers, and complex problems into practical action. Now bringing that same energy to <strong>AI and product thinking.</strong></p>
+      <div class="cta-row">
+        <a class="btn primary" href="#experience">Explore my journey ↘</a>
+        <a class="btn secondary" href="https://www.linkedin.com/in/akshay-talwar-742988126" target="_blank" rel="noopener noreferrer">Connect on LinkedIn ↗</a>
+      </div>
+    </div>
+    <div class="hero-art" aria-label="Lead build evolve graphic">
+      <div class="art-number">01 / THE MINDSET</div>
+      <div class="art-word">Raise<br>the <span>bar.</span></div>
+      <div class="art-note">Then help everyone clear it</div>
+    </div>
+  </div>
+
+  <div class="ticker">People first <span>✳</span> Data informed <span>✳</span> Outcome obsessed <span>✳</span> Always evolving <span>✳</span> People first <span>✳</span> Data informed <span>✳</span></div>
+
+  <section id="approach" class="wrap">
+    <div class="section-head">
+      <div class="kicker">01 / My approach</div>
+      <div><h2>Performance<br>with purpose.</h2><p class="intro">For 10+ years — including 9+ years with American Express — I’ve focused on making businesses perform better by putting customers and people at the centre. I believe great results are built through clear standards, smart execution, and teams who feel equipped to win.</p></div>
+    </div>
+    <div class="pillars">
+      <article class="pillar"><div class="num">01 — LEAD</div><h3>Build people.</h3><p>Lead teams, coach future leaders, and create the conditions for people to deliver their best work.</p></article>
+      <article class="pillar"><div class="num">02 — OPTIMIZE</div><h3>Fix the system.</h3><p>Use operational excellence, strategic data analysis, and process thinking to improve performance and customer outcomes.</p></article>
+      <article class="pillar"><div class="num">03 — INNOVATE</div><h3>Stay curious.</h3><p>Challenge the status quo, explore AI and product opportunities, and turn useful ideas into real-world solutions.</p></article>
+    </div>
+  </section>
+
+  <section id="experience" class="dark">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="kicker">02 / The track record</div>
+        <div><h2>Earned.<br>Not given.</h2><p class="intro">A career built through frontline customer experience, team leadership, and a growing focus on wider operational impact. My style: set a high bar, use evidence, and help the team get there together.</p></div>
+      </div>
+      <div class="timeline">
+        <article class="role"><div class="role-date">Mar 2026 — Present</div><div><h3>Senior Team Leader</h3><div class="org">American Express · Delhi, India</div><p>Lead customer engagement and operations with a focus on sales performance, people development, process optimization, and measurable business outcomes.</p></div></article>
+        <article class="role"><div class="role-date">Jul 2021 — Mar 2026</div><div><h3>Team Leader</h3><div class="org">American Express · Delhi, India</div><p>Led teams and performance initiatives, driving sales execution, colleague engagement, and operational discipline. Team leadership includes managing a team of 20.</p></div></article>
+        <article class="role"><div class="role-date">Feb 2020 — Jun 2021</div><div><h3>Interim Team Lead</h3><div class="org">American Express</div><p>Stepped into leadership responsibilities, supporting team execution and day-to-day performance.</p></div></article>
+        <article class="role"><div class="role-date">Oct 2016 — Jan 2020</div><div><h3>Customer Service Specialist</h3><div class="org">American Express</div><p>Built a frontline foundation in customer engagement, service delivery, and understanding the moments that shape customer experience.</p></div></article>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>10+</strong><span>Years in customer engagement & operations</span></div>
+        <div class="stat"><strong>20</strong><span>People led as a team leader</span></div>
+        <div class="stat"><strong>#1</strong><span>Team / site performance experience</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="building" class="wrap">
+    <div class="section-head">
+      <div class="kicker">03 / The next play</div>
+      <div><h2>Curiosity<br>in motion.</h2><p class="intro">I’m expanding from operational leadership into AI and product management — learning by doing, testing ideas, and looking for the real problem behind the brief.</p></div>
+    </div>
+    <div class="build-grid">
+      <article class="build-card"><div class="tag">01 / AI + Product</div><div><h3>Make AI useful.</h3><p>Exploring how LLMs, retrieval-augmented generation (RAG), and structured prompts can turn information into relevant, actionable experiences.</p></div></article>
+      <article class="build-card"><div class="tag">02 / Build & test</div><div><h3>From idea to tool.</h3><p>Prototyping practical concepts such as “Let’s Get You Hired” — a JD-driven interview preparation experience — with a focus on relevance and fresh analysis.</p></div></article>
+      <article class="build-card"><div class="tag">03 / Operating mindset</div><div><h3>Efficiency is a strategy.</h3><p>Interested in improving conversion, customer experience, colleague effectiveness, and operating costs together — not in isolation.</p></div></article>
+      <article class="build-card"><div class="tag">04 / Always learning</div><div><h3>Stay. Stretch. Evolve.</h3><p>Keep building meaningful capability, challenge assumptions, and make the next move a deliberate one.</p></div></article>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="section-head">
+      <div class="kicker">04 / Recognition & education</div>
+      <div><h2>Built on<br>the basics.</h2><p class="intro">Recognized for performance and contribution, with a technical education that supports a structured, analytical approach to business problems.</p></div>
+    </div>
+    <div class="education">
+      <div><h3>Centurion & 2× Tribute Award Winner</h3><p>Recognition for performance and contribution. Award names are presented as listed in my professional profile.</p></div>
+      <div><h3>B.Tech — Electrical, Electronic & Communications Engineering Technology</h3><p>Bal Bharati Public School, Rohini is listed in my profile under education, alongside my B-Tech qualification.</p></div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="eyebrow"><i class="dot"></i> The next opportunity starts with a conversation</div>
+      <h2>Let’s make<br>something better.</h2>
+      <div class="contact-bottom">
+        <div class="contact-links">
+          <a href="mailto:akshaytalwar9414@gmail.com">akshaytalwar9414@gmail.com ↗</a>
+          <a href="tel:+919654749731">+91 96547 49731 ↗</a>
+          <a href="https://www.linkedin.com/in/akshay-talwar-742988126" target="_blank" rel="noopener noreferrer">LinkedIn profile ↗</a>
+        </div>
+        <div class="contact-label">Leadership · Operational Excellence · AI Product</div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><span>© Akshay Talwar</span><span>Lead with intent. Build with discipline. Evolve continuously.</span></div></footer>
+</body>
+</html>
